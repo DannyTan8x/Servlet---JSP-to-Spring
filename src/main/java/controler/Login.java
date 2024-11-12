@@ -51,7 +51,16 @@ public class Login extends HttpServlet {
 		var username = request.getParameter("username");
 		var password = request.getParameter("password");
 		
-		response.sendRedirect(login(username, password)? SUCCESS_PATH: ERROR_PATH);
+//		response.sendRedirect(login(username, password)? SUCCESS_PATH: ERROR_PATH);
+		String page;
+		if(isInputted(username, password)) {
+			
+		}
+	}
+
+	private boolean isInputted(String username, String password) {
+		// TODO Auto-generated method stub
+		return username != null & password != null & username.trim().length() != 0 && password.trim().length() != 0;
 	}
 
 	private boolean login(String username, String password) throws IOException{
