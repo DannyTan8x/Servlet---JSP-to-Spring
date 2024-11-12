@@ -1,0 +1,14 @@
+*.class
+*.log
+*.jar
+*.war
+# Maven Wrapper
+.mvn/
+
+# Eclipse settings
+.settings/
+
+# Git directory
+.git/
+
+target/
