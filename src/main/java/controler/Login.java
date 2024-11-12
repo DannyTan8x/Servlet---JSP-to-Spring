@@ -53,9 +53,16 @@ public class Login extends HttpServlet {
 		
 //		response.sendRedirect(login(username, password)? SUCCESS_PATH: ERROR_PATH);
 		String page;
-		if(isInputted(username, password)) {
-			
+		if(isInputted(username, password) && login(username, password)) {
+			if(request.getSession(false) != null) {
+				request.changeSessionId();
+			}
+			request.getSession().setAttribute("login", username);
+			page = SUCCESS_PATH;
+		}else {
+			page = ERROR_PATH;
 		}
+		response.sendRedirect(page);
 	}
 
 	private boolean isInputted(String username, String password) {
@@ -64,11 +71,11 @@ public class Login extends HttpServlet {
 	}
 
 	private boolean login(String username, String password) throws IOException{
-		if(username != null && username.trim().length() != 0 && password != null) {
+	
 			var userhome = Paths.get(USERS, username);
 			return Files.exists(userhome) && isCorrectPassword(password, userhome);
-		}
-		return false;
+		
+
 		
 	}
 	
