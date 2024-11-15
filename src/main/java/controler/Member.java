@@ -88,7 +88,6 @@ public class Member extends HttpServlet {
 			}
 		}
 
-//		return messages;
 		return messages;
 	}
 
