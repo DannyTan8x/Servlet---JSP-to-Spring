@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,17 +15,28 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet implementation class Login
  */
-@WebServlet("/login")
+@WebServlet(
+		name = "login",
+		urlPatterns = {"/login"},
+		initParams = {
+				@WebInitParam(name = "SUCCESS", value = "member"),
+				@WebInitParam(name = "ERROR", value = "index.html")
+		}
+		)
 public class Login extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private String USERS;
+//	private final String SUCCESS_PATH = "member";
+//	private final String ERROR_PATH = "index.html";
+	private  String SUCCESS_PATH ;
+	private  String ERROR_PATH ;
 	@Override
 	public void init() throws ServletException {
 		// Get the real path to the "users" directory within the project
 		USERS = getServletContext().getRealPath("/users");
+		SUCCESS_PATH = getInitParameter("SUCCESS");
+		ERROR_PATH = getInitParameter("ERROR");
 	}
-	private final String SUCCESS_PATH = "member";
-	private final String ERROR_PATH = "index.html";
        
 
 
