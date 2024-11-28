@@ -1,0 +1,65 @@
+package web;
+
+import java.io.IOException;
+import java.util.Optional;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletResponse;
+
+import org.owasp.html.HtmlPolicyBuilder;
+import org.owasp.html.PolicyFactory;
+
+/**
+ * Servlet Filter implementation class HtmlSanitizer
+ */
+@WebFilter("/new_message")
+public class HtmlSanitizer extends HttpFilter implements Filter {
+	private static final long serialVersionUID = 1L;
+	private PolicyFactory policy;
+
+	@Override
+	public void init() throws ServletException {
+		// TODO Auto-generated method stub
+		policy = new HtmlPolicyBuilder().allowElements("a", "b", "i", "del", "pre", "code")
+				.allowUrlProtocols("http", "https").allowAttributes("href").onElements("a").requireRelNofollowOnLinks().toFactory();
+	}
+
+	private class SanitizeWrapper extends HttpServletRequestWrapper{
+
+		public SanitizeWrapper(HttpServletRequest request) {
+			super(request);
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public String getParameter(String name) {
+			// TODO Auto-generated method stub
+			return Optional.ofNullable(getRequest().getParameter(name)).map(policy::sanitize).orElse(null);
+		}
+		
+	}
+	
+
+	/**
+	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
+	 */
+	public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
+		// TODO Auto-generated method stub
+		// place your code here
+
+		// pass the request along the filter chain
+		chain.doFilter(new SanitizeWrapper(request), response);
+	}
+
+
+
+}
