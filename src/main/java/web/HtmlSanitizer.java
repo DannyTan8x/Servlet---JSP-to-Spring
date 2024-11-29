@@ -13,13 +13,14 @@ import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
-
+//外掛的 html標籤策略 （OWASP）
 import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
 
 /**
  * Servlet Filter implementation class HtmlSanitizer
  */
+//過濾使用者輸入 new_message 的標籤 
 @WebFilter("/new_message")
 public class HtmlSanitizer extends HttpFilter implements Filter {
 	private static final long serialVersionUID = 1L;
@@ -28,6 +29,7 @@ public class HtmlSanitizer extends HttpFilter implements Filter {
 	@Override
 	public void init() throws ServletException {
 		// TODO Auto-generated method stub
+		//只允許使用者輸入的 html標籤 如 <a>; <b>; <i> <del>; <pre>; <code> ; http; https; href;
 		policy = new HtmlPolicyBuilder().allowElements("a", "b", "i", "del", "pre", "code")
 				.allowUrlProtocols("http", "https").allowAttributes("href").onElements("a").requireRelNofollowOnLinks().toFactory();
 	}

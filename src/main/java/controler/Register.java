@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import model.UserService;
+
 @WebServlet("/register")
 public class Register extends HttpServlet {
 	
@@ -23,14 +25,16 @@ public class Register extends HttpServlet {
 //	private final String USERS = Paths.get(System.getProperty("user.dir"), "users").toString();\\
 	
 	//路徑在 /Volumes/1TB/javaProjectWorkSpace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/CH3EX1/users/admin
-	private String USERS;
+//	private String USERS;
+	private final String SUCCESS_PATH = "register_success.view";
+	private final String ERROR_PATH = "register_error.view";
+	private UserService userService ;
 	@Override
 	public void init() throws ServletException {
 		// Get the real path to the "users" directory within the project
-		USERS = getServletContext().getRealPath("/users");
+//		USERS = getServletContext().getRealPath("/users");
+		userService = (UserService) getServletContext().getAttribute("userService");
 	}
-	private final String SUCCESS_PATH = "register_success.view";
-	private final String ERROR_PATH = "register_error.view";
 
 	private final Pattern emailRegex = Pattern.compile("^[_a-z0-9-]+([.][_a-z0-9-]+)*@[a-z0-9-]+([.][a-z0-9-]+)*$");
 
@@ -59,7 +63,7 @@ public class Register extends HttpServlet {
 		String path;
 		if (errors.isEmpty()) {
 			path = SUCCESS_PATH;
-			tryCreateUser(email, username, password);
+			userService.tryCreateUser(email, username, password);
 		} else {
 			path = ERROR_PATH;
 			request.setAttribute("errors", errors);
@@ -80,24 +84,24 @@ public class Register extends HttpServlet {
 		return password != null && passwdRegex.matcher(password).find() && password.equals(password2);
 	}
 
-	private void tryCreateUser(String email, String username, String password) throws IOException {
-		var userhome = Paths.get(USERS, username);
-		System.out.println(USERS);
-		System.out.println(userhome);
-		if (Files.notExists(userhome)) {
-			createUser(userhome, email, password);
-		}
-	}
-
-	private void createUser(Path userhome, String email, String password) throws IOException {
-		Files.createDirectories(userhome);
-
-		var salt = ThreadLocalRandom.current().nextInt();
-		var encrypt = String.valueOf(salt + password.hashCode());
-
-		var profile = userhome.resolve("profile");
-		try (var writer = Files.newBufferedWriter(profile)) {
-			writer.write(String.format("%s\t%s\t%d", email, encrypt, salt));
-		}
-	}
+//	private void tryCreateUser(String email, String username, String password) throws IOException {
+//		var userhome = Paths.get(USERS, username);
+//		System.out.println(USERS);
+//		System.out.println(userhome);
+//		if (Files.notExists(userhome)) {
+//			createUser(userhome, email, password);
+//		}
+//	}
+//
+//	private void createUser(Path userhome, String email, String password) throws IOException {
+//		Files.createDirectories(userhome);
+//
+//		var salt = ThreadLocalRandom.current().nextInt();
+//		var encrypt = String.valueOf(salt + password.hashCode());
+//
+//		var profile = userhome.resolve("profile");
+//		try (var writer = Files.newBufferedWriter(profile)) {
+//			writer.write(String.format("%s\t%s\t%d", email, encrypt, salt));
+//		}
+//	}
 }

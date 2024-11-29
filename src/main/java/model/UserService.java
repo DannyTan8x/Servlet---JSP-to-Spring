@@ -21,7 +21,7 @@ public class UserService {
 		this.USERS = USERS;
 	}
 	
-	private void tryCreateUser(String email, String username, String password) throws IOException {
+	public void tryCreateUser(String email, String username, String password) throws IOException {
 		var userhome = Paths.get(USERS, username);
 		System.out.println(USERS);
 		System.out.println(userhome);
@@ -30,7 +30,7 @@ public class UserService {
 		}
 	}
 
-	private void createUser(Path userhome, String email, String password) throws IOException {
+	public void createUser(Path userhome, String email, String password) throws IOException {
 		Files.createDirectories(userhome);
 
 		var salt = ThreadLocalRandom.current().nextInt();
